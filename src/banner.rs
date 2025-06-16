@@ -13,7 +13,7 @@ pub fn ban_a_random_game(already_banned_games: &Vec<usize>) -> usize {
     }
 }
 
-/*pub fn put_team_on_the_bench(already_banned_teams: &Vec<i8>) -> i8 {
+/*pub fn put_team_on_the_bench(already_banned_teams: &Vec<u8>) -> u8 {
     let mut rng = rand::rng();
     let bannable_teams = TEAMS
         .into_iter()

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub fn init_games_map(map: &mut HashMap<i8, (String, String)>) {
+pub fn init_games_map(map: &mut HashMap<u8, (String, String)>) {
     map.insert(0, (String::from("Ch’ti fou mi"), String::from("Dodo")));
     map.insert(1, (String::from("Graine de star"), String::from("Aéla")));
     map.insert(
@@ -20,7 +20,7 @@ pub fn init_games_map(map: &mut HashMap<i8, (String, String)>) {
     map.insert(4, (String::from("Copier Coller"), String::from("Assia")));
 }
 
-pub fn init_teams_map(map: &mut HashMap<i8, String>) {
+pub fn init_teams_map(map: &mut HashMap<u8, String>) {
     map.insert(0, String::from("Acajou"));
     map.insert(1, String::from("Fushia"));
     map.insert(2, String::from("Lilas"));

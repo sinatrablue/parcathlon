@@ -10,12 +10,12 @@ use crate::picker::pick_a_random_team;
 use std::collections::HashMap;
 
 const GAMES_NUMBER: usize = 5;
-const TEAMS: [i8; 9] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-type Round = Vec<HashMap<i8, (i8, i8)>>;
+const TEAMS: [u8; 9] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+type Round = Vec<HashMap<u8, (u8, u8)>>;
 
 fn generate_round(
     prev_rounds: &Vec<Round>,
-    _already_banned_teams: &mut Vec<i8>,
+    _already_banned_teams: &mut Vec<u8>,
     already_banned_games: &mut Vec<usize>,
 ) -> Round {
     let mut round = Vec::with_capacity(GAMES_NUMBER - 1);
@@ -24,7 +24,7 @@ fn generate_round(
     //let team_on_the_bench_for_round = put_team_on_the_bench(already_banned_teams);
     //println!("team on the bench {}", team_on_the_bench_for_round);
     //already_banned_teams.push(team_on_the_bench_for_round);
-    let mut teams_busy_this_round: Vec<i8> = Vec::with_capacity(TEAMS.len() - 1);
+    let mut teams_busy_this_round: Vec<u8> = Vec::with_capacity(TEAMS.len() - 1);
 
     for i in 0..GAMES_NUMBER {
         if i == banned_game_for_round {
@@ -34,7 +34,7 @@ fn generate_round(
         let banned_teams_for_game = prev_rounds.iter().fold(vec![], |mut acc, round| {
             round.iter().for_each(|map| {
                 for (game, teams) in map {
-                    if *game == i as i8 {
+                    if *game == i as u8 {
                         acc.push(teams.0);
                         acc.push(teams.1);
                     }
@@ -67,7 +67,7 @@ fn generate_round(
 
         let mut res = HashMap::new();
         res.insert(
-            i as i8,
+            i as u8,
             (randomly_picked_team, randomly_picked_opponent_team),
         );
         round.push(res);
@@ -78,13 +78,13 @@ fn generate_round(
 }
 
 fn main() {
-    let mut games_map: HashMap<i8, (String, String)> = HashMap::new();
+    let mut games_map: HashMap<u8, (String, String)> = HashMap::new();
     init_games_map(&mut games_map);
-    let mut teams_map: HashMap<i8, String> = HashMap::new();
+    let mut teams_map: HashMap<u8, String> = HashMap::new();
     init_teams_map(&mut teams_map);
 
     let mut rounds: Vec<Round> = Vec::with_capacity(5);
-    let mut already_banned_teams: Vec<i8> = Vec::with_capacity(GAMES_NUMBER - 1);
+    let mut already_banned_teams: Vec<u8> = Vec::with_capacity(GAMES_NUMBER - 1);
     let mut already_banned_games: Vec<usize> = Vec::with_capacity(GAMES_NUMBER - 1);
 
     for _i in 1..GAMES_NUMBER + 1 {
