@@ -1,7 +1,9 @@
+mod analyzer;
 mod banner;
 mod init;
 mod picker;
 
+use crate::analyzer::deduce_team_on_bench;
 use crate::banner::ban_a_random_game;
 use crate::init::{init_games_map, init_teams_map};
 use crate::picker::pick_a_random_team;
@@ -16,10 +18,8 @@ fn generate_round(
     _already_banned_teams: &mut Vec<i8>,
     already_banned_games: &mut Vec<usize>,
 ) -> Round {
-    println!("=================================== Generating round");
     let mut round = Vec::with_capacity(GAMES_NUMBER - 1);
     let banned_game_for_round = ban_a_random_game(already_banned_games);
-    println!("banned_game_for_round: {}", banned_game_for_round);
     already_banned_games.push(banned_game_for_round);
     //let team_on_the_bench_for_round = put_team_on_the_bench(already_banned_teams);
     //println!("team on the bench {}", team_on_the_bench_for_round);
@@ -27,7 +27,6 @@ fn generate_round(
     let mut teams_busy_this_round: Vec<i8> = Vec::with_capacity(TEAMS.len() - 1);
 
     for i in 0..GAMES_NUMBER {
-        println!("================ GAME {}", i);
         if i == banned_game_for_round {
             continue;
         }
@@ -43,7 +42,6 @@ fn generate_round(
             });
             acc
         });
-        println!("Banned teams : {:?}", banned_teams_for_game);
 
         let available_teams_for_game = TEAMS
             .into_iter()
@@ -52,31 +50,8 @@ fn generate_round(
                 !teams_busy_this_round.contains(&team) && !banned_teams_for_game.contains(&team)
             })
             .collect::<Vec<_>>();
-        println!("Available teams : {:?}", available_teams_for_game);
 
         let randomly_picked_team = pick_a_random_team(&available_teams_for_game);
-        println!("Picked team : {:?}", randomly_picked_team);
-
-        /*let banned_teams_for_picked_team = prev_rounds
-            .iter()
-            .flat_map(|r| {
-                r.iter().fold(vec![], |acc, round| {
-                    let mut teams_to_ban = acc.clone();
-                    for (_game, teams) in round {
-                        if teams.0 == randomly_picked_team {
-                            teams_to_ban.push(teams.1);
-                        } else if teams.1 == randomly_picked_team {
-                            teams_to_ban.push(teams.0);
-                        }
-                    }
-                    teams_to_ban
-                })
-            })
-            .collect::<Vec<_>>();
-        println!(
-            "Banned teams for picked team : {:?}",
-            banned_teams_for_picked_team
-        );*/
 
         let available_teams_for_picked_team = TEAMS
             .into_iter()
@@ -87,13 +62,8 @@ fn generate_round(
                     && available_teams_for_game.contains(team)
             })
             .collect::<Vec<_>>();
-        println!(
-            "Available teams for picked team : {:?}",
-            available_teams_for_picked_team
-        );
 
         let randomly_picked_opponent_team = pick_a_random_team(&available_teams_for_picked_team);
-        println!("Opponent team : {:?}", randomly_picked_opponent_team);
 
         let mut res = HashMap::new();
         res.insert(
@@ -125,10 +95,17 @@ fn main() {
         );
         rounds.push(round);
     }
-    /*for i in 0..rounds.len() {
+    for i in 0..rounds.len() {
         println!("==> ROUND #{}", i + 1);
-        rounds[i].iter().for_each(|round| {
-            for (game, teams) in round {
+        let team_on_the_bench = deduce_team_on_bench(&rounds[i]);
+        match team_on_the_bench {
+            Some(team) => {
+                println!("Équipe en autonomie : {}", teams_map.get(&team).unwrap())
+            }
+            _ => {}
+        }
+        rounds[i].iter().for_each(|game_pairs| {
+            for (game, teams) in game_pairs {
                 let (name, person) = games_map.get(&game).unwrap();
                 println!("=====> {} avec {}", name, person);
                 let (team1, team2) = teams;
@@ -139,5 +116,5 @@ fn main() {
                 );
             }
         })
-    }*/
+    }
 }
