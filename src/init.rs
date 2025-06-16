@@ -1,23 +1,23 @@
 use std::collections::HashMap;
 
 pub fn init_games_map(map: &mut HashMap<i8, (String, String)>) {
-    map.insert(1, (String::from("Ch’ti fou mi"), String::from("Dodo")));
-    map.insert(2, (String::from("Graine de star"), String::from("Aéla")));
+    map.insert(0, (String::from("Ch’ti fou mi"), String::from("Dodo")));
+    map.insert(1, (String::from("Graine de star"), String::from("Aéla")));
     map.insert(
-        3,
+        2,
         (
             String::from("Plantons le décor"),
             String::from("Christophe"),
         ),
     );
     map.insert(
-        4,
+        3,
         (
             String::from("Olympic’nic’douille"),
             String::from("Baptiste"),
         ),
     );
-    map.insert(5, (String::from("Copier Coller"), String::from("Assia")));
+    map.insert(4, (String::from("Copier Coller"), String::from("Assia")));
 }
 
 pub fn init_teams_map(map: &mut HashMap<i8, String>) {
