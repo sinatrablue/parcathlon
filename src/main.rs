@@ -1,11 +1,12 @@
 mod analyzer;
 mod banner;
 mod init;
+mod pdf_exporter;
 mod picker;
 
-use crate::analyzer::deduce_team_on_bench;
 use crate::banner::ban_a_random_game;
 use crate::init::{init_games_map, init_teams_map};
+use crate::pdf_exporter::export_rounds_to_pdf;
 use crate::picker::pick_a_random_team;
 use std::collections::HashMap;
 
@@ -95,26 +96,12 @@ fn main() {
         );
         rounds.push(round);
     }
-    for i in 0..rounds.len() {
-        println!("==> ROUND #{}", i + 1);
-        let team_on_the_bench = deduce_team_on_bench(&rounds[i]);
-        match team_on_the_bench {
-            Some(team) => {
-                println!("Équipe en autonomie : {}", teams_map.get(&team).unwrap())
-            }
-            _ => {}
+    match export_rounds_to_pdf(&rounds, &games_map, &teams_map) {
+        Ok(_) => {
+            println!("Rounds exported");
         }
-        rounds[i].iter().for_each(|game_pairs| {
-            for (game, teams) in game_pairs {
-                let (name, person) = games_map.get(&game).unwrap();
-                println!("=====> {} avec {}", name, person);
-                let (team1, team2) = teams;
-                println!(
-                    "========> {} vs {}",
-                    teams_map.get(team1).unwrap(),
-                    teams_map.get(team2).unwrap()
-                );
-            }
-        })
+        Err(_) => {
+            println!("Error exporting");
+        }
     }
 }
